@@ -11,13 +11,15 @@ const Auth = async (req, res, next) => {
             const userData = await UserData.findOne({ _id: verify.id });
             req.token = token;
             const Data = {
+                id:userData._id,
                 name: userData.name,
-                address: userData.addres,
+                address: userData.address,
                 phone: userData.phone,
                 email: userData.email,
                 username: userData.username,
-                detail: userData.detail,
+                detail: userData.detail
             }
+            req.Admin = userData.admin
             req.userData = Data;
             next();
         }

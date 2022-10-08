@@ -65,7 +65,17 @@ app.use('/login', Login);
 const User = require('./Routes/User');
 app.use('/user', User);
 
+//Logout Routes
+const Logout = require('./Routes/Logout');
+app.use('/logout', Logout);
 
+//Complain Routes
+const Complain = require('./Routes/Complain');
+app.use('/complain', Complain);
+
+//User Chart data Routes
+const Chart = require('./Routes/Chart');
+app.use('/chart', Chart);
 
 // app.get('/', (req, res) => {
 //     app.use(express.static(path.resolve(__dirname, 'clients', 'build')))

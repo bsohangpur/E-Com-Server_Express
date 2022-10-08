@@ -28,6 +28,8 @@ const ProductSchema = new mongodb.Schema({
     review: [{
         rating: { type: Number },
         detail: { type: String },
+        userId: { type: String },
+        userName: { type: String },
         time: { type: Date, default: Date.now }
     }],
     image: [{ type: String }],

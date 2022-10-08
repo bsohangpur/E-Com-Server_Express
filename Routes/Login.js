@@ -7,7 +7,8 @@ const dotenv = require("dotenv").config();
 
 express.post('/data', async (req, res) => {
     const { username, email, password, conformpass } = req.body;
-
+    const Username = username.toLowerCase()
+    const Email = email.toLowerCase()
     // finding the email and username data from DB
     const emailMatch = await RegisterData.findOne({ email });
     const usernameMatch = await RegisterData.findOne({ username });
@@ -18,9 +19,14 @@ express.post('/data', async (req, res) => {
                 const passMatch = await bcrypt.compare(password, email ? emailMatch.password : usernameMatch.password);
                 if (passMatch) {
                     const id = email ? emailMatch._id : usernameMatch._id
+                    const admin = email ? emailMatch.admin : usernameMatch.admin
                     const token = jwt.sign({ id }, process.env.JWT_SECRET_KEY)
-                    res.cookie('jwt', token);
-                    res.send({ "status": "success", "message": "Login Success", token })
+                    res.cookie('jwt', token, {
+                        secure: true,
+                        httpOnly: true,
+                        sameSite: 'lax'
+                    });
+                    res.send({ "status": "success", "message": "Login Success", token, admin })
                 } else {
                     res.send({ "status": "failed", "message": "Given password not match with Old password" })
                 }

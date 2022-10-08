@@ -8,7 +8,7 @@ const RegisterSchema = new mongodb.Schema({
         firstName: { type: String },
         lastName: { type: String }
     },
-    phone: { type: Number, min: 10 },
+    phone: { type: Number, min: 1111111111, max: 9999999999 },
     email: { type: String, minLength: 5 },
     username: { type: String },
     password: { type: String },
@@ -18,20 +18,41 @@ const RegisterSchema = new mongodb.Schema({
         apartment: { type: String },
         country: { type: String },
         state: { type: String },
-        zipCode: { type: Number, min: 6, max: 6 }
+        zipCode: { type: Number, min: 111111, max: 999999 }
     },
-    comment: { type: String },
     checkin: { type: Boolean },
     token: { type: String },
-    admin: { type: Boolean }
+    admin: {
+        admin: { type: Boolean, default: false },
+        type: { type: Number, default: 1996 }
+    },
+    cartProduct: [{
+        title: {
+            type: String,
+            required: true
+        },
+        priceSell: {
+            type: Number,
+            required: true
+        },
+        quantity: {
+            type: String,
+            required: true,
+            default: 1
+        },
+        productId: { type: String },
+        image: { type: String },
+        imageAlt: { type: String },
+        createdOn: { type: Date, default: Date.now }
+    }]
 })
 
-RegisterSchema.methods.genrateToken = async function(){
-    try{
-        const token = jwt.sign({_id:this._id} , process.env.JWT_SECRET_KEY);
-        this.token=token;
+RegisterSchema.methods.genrateToken = async function () {
+    try {
+        const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET_KEY);
+        this.token = token;
         await this.save()
-    }catch(error){
+    } catch (error) {
         console.log(error)
     }
 }

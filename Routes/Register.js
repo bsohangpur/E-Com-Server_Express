@@ -20,7 +20,7 @@ express.post('/data', async (req, res) => {
         res.send({ "status": "failed", "message": "Username already exists" })
     }
     else {
-        if (name && phone && (email||username) && password && conformpass) {
+        if (name && phone && (email || username) && password && conformpass) {
             if (password === conformpass) {
                 try {
                     // password hasing
@@ -28,7 +28,7 @@ express.post('/data', async (req, res) => {
                     const Data = new RegisterData(
                         { name, phone, email, username, password: passwordHash, detail, address, checkin }
                     );
-                    
+
                     await Data.genrateToken()
 
                     await Data.save();
@@ -52,7 +52,7 @@ express.put('/data/:id', async (req, res) => {
     const id = req.params.id;
     const Match = await RegisterData.findById(id)
     // object distructaring
-    const { name, phone, email, username, password, oldpassword, conformpass, address, detail, checkin } = req.body;
+    const { name, phone, email, username, password, oldpassword, conformpass, address, detail, checkin, admin } = req.body;
 
 
     //update password
@@ -86,8 +86,15 @@ express.put('/data/:id', async (req, res) => {
     }
     else {
         try {
-            await RegisterData.findByIdAndUpdate(id, { name, phone, email, username, address, detail, checkin });
-            res.send({ "status": "success", "message": "Your Data is Updated successfully" })
+            // setting admin permition.
+            if (admin) {
+                await RegisterData.findByIdAndUpdate(id, { admin })
+                res.send({ "status": "success", "message": "Your are successfully added as Admin." })
+            }
+            else {
+                await RegisterData.findByIdAndUpdate(id, { name, phone, email, username, address, detail, checkin });
+                res.send({ "status": "success", "message": "Your Data is Updated successfully" })
+            }
         } catch (e) {
             res.send({ "status": "failed", "message": "Unable to Update Data" });
         }
