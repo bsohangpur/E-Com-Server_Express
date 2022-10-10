@@ -36,13 +36,12 @@ const RegisterSchema = new mongodb.Schema({
             required: true
         },
         quantity: {
-            type: String,
+            type: Number,
             required: true,
             default: 1
         },
         productId: { type: String },
         image: { type: String },
-        imageAlt: { type: String },
         createdOn: { type: Date, default: Date.now }
     }]
 })

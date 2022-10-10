@@ -77,10 +77,9 @@ app.use('/complain', Complain);
 const Chart = require('./Routes/Chart');
 app.use('/chart', Chart);
 
-// app.get('/', (req, res) => {
-//     app.use(express.static(path.resolve(__dirname, 'clients', 'build')))
-//     res.sendFile(path.resolve(__dirname, 'clients', 'build', 'index.html'))
-// })
+//Routes to react webSite with Api
+const Routes = require('./Routes/Routes');
+app.use('/', Routes);
 
 
 
