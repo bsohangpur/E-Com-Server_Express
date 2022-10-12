@@ -26,7 +26,7 @@ express.post('/data', async (req, res) => {
                     // password hasing
                     const passwordHash = await bcrypt.hash(password, 10);
                     const Data = new RegisterData(
-                        { name, phone, email, username, password: passwordHash, detail, address, checkin }
+                        { name, phone, email:email.toLowerCase() , username: username.toLowerCase(), password: passwordHash, detail, address, checkin }
                     );
 
                     await Data.genrateToken()
