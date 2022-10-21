@@ -6,20 +6,19 @@ const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv").config();
 
 express.post('/data', async (req, res) => {
-    const { username, email, password, conformpass } = req.body;
-    const Username = username && username.toLowerCase()
+    const { email, password, conformpass } = req.body;
+
     const Email = email && email.toLowerCase()
     // finding the email and username data from DB
     const emailMatch = await RegisterData.findOne({ email:Email });
-    const usernameMatch = await RegisterData.findOne({ username:Username });
-    if ((email || username) && password && conformpass) {
-        if (emailMatch || usernameMatch) {
+    if ((email) && password && conformpass) {
+        if (emailMatch) {
             if (password === conformpass) {
                 // checking if password input and password on db match.
-                const passMatch = await bcrypt.compare(password, email ? emailMatch.password : usernameMatch.password);
+                const passMatch = await bcrypt.compare(password, emailMatch.password);
                 if (passMatch) {
-                    const id = email ? emailMatch._id : usernameMatch._id
-                    const admin = email ? emailMatch.admin : usernameMatch.admin
+                    const id = emailMatch._id
+                    const admin = emailMatch.admin
                     const token = jwt.sign({ id }, process.env.JWT_SECRET_KEY)
                     res.cookie('jwt', token, {
                         secure: true,

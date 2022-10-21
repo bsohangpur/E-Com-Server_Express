@@ -92,6 +92,15 @@ express.put('/data/:id', Uploads.array('image'), async (req, res) => {
             })
             res.send({ status: "success", message: "Data updated with Image successfully" })
         }
+        else {
+            const productImg = req.files.map((file) => { return file.path });
+            const productImgalt = req.files.map((file) => { return file.originalname });
+            await ProductData.findByIdAndUpdate(id, {
+                image: productImg,
+                imageAlt: productImgalt
+            })
+            res.send({ status: "success", message: "Image are updated successfully" })
+        }
         // if (review) {
         //     await ProductData.findByIdAndUpdate(id,
         //         {
@@ -188,10 +197,10 @@ express.put('/data/review/edit/:id', async (req, res) => {
     const product = await ProductData.findById(Id);
     const index = product.review.findIndex(object => {
         return object._id == id;
-      });
+    });
     try {
         await ProductData.updateOne(
-            { _id: Id}, { $set: { ["review."+index]:review } }
+            { _id: Id }, { $set: { ["review." + index]: review } }
         )
         res.send("success")
 

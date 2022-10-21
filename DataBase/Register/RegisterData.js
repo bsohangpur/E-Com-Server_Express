@@ -16,7 +16,7 @@ const RegisterSchema = new mongodb.Schema({
     address: {
         streetAddress: { type: String },
         apartment: { type: String },
-        country: { type: String },
+        city: { type: String },
         state: { type: String },
         zipCode: { type: Number, min: 111111, max: 999999 }
     },

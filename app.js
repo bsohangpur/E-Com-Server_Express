@@ -44,6 +44,7 @@ app.use(cookieParser())
 app.use('/uploads', express.static('./uploads'));
 
 
+
 //Blog Routes
 const Blog = require('./Routes/Blog');
 app.use('/blog', Blog);
@@ -77,9 +78,17 @@ app.use('/complain', Complain);
 const Chart = require('./Routes/Chart');
 app.use('/chart', Chart);
 
+//User Chart data Routes
+const Order = require('./Routes/Order');
+app.use('/order', Order);
+
 //Routes to react webSite with Api
 const Routes = require('./Routes/Routes');
 app.use('/', Routes);
+
+//User Payment data Routes
+const Payment = require('./Routes/Payment');
+app.use('/payment', Payment);
 
 
 

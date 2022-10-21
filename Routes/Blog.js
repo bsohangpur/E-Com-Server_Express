@@ -6,28 +6,24 @@ const Uploads = require('../app')
 
 //add blog data
 express.post('/data', Uploads.array('image'), async (req, res) => {
+    const { title, creater, content, categories, tags } = req.body
+    const { path, originalname } = req.files[0]
 
-    const blogimg = req.files.map((file) => { return file.path });
-    const blogimgalt = req.files.map((file) => { return file.originalname });
-
-    const Data = new BlogData(
-        {
-            title: req.body.title,
-            creater: req.body.creater,
-            content: req.body.content,
-            categories: req.body.categories,
-            tags: req.body.tags,
-            image: blogimg,
-            imageAlt: blogimgalt
-        }
-    );
-    const Send = await Data.save();
 
     try {
-        res.send(Send)
+        const Data = new BlogData(
+            {
+                title, creater, content, categories, tags,
+                image: path,
+                imageAlt: originalname
+            }
+        );
+        await Data.save();
+
+        res.send({ "status": "success", "message": "blog is added successfully" })
     }
     catch (e) {
-        res.send(e)
+        res.send({ "status": "failed", "message": "something went wrong" })
     }
 })
 
@@ -48,43 +44,52 @@ express.get('/data', async (req, res) => {
 
 // getting blog by id and update the info
 express.put('/data/:id', Uploads.array('image'), async (req, res) => {
+    const { title, creater, content, categories, tags } = req.body
     const id = req.params.id;
+
     try {
-        if (req.body.title || req.body.creater || req.body.content || req.body.categories || req.body.tags) {
+        if (title || creater || content || categories || tags) {
 
             await BlogData.findByIdAndUpdate(id, {
-                title: req.body.title,
-                creater: req.body.creater,
-                content: req.body.content,
-                categories: req.body.categories,
-                tags: req.body.tags
+                title: title,
+                creater: creater,
+                content: content,
+                categories: categories,
+                tags: tags
             })
             res.send({ status: "success", message: "Data updated successfully" })
         }
-        else if (req.files && req.body.title || req.body.creater || req.body.content || req.body.categories || req.body.tags) {
-            const blogimg = req.files.map((file) => { return file.path });
-            const blogimgalt = req.files.map((file) => { return file.originalname });
-            const Data = await BlogData.findByIdAndUpdate(id, {
-                title: req.body.title,
-                creater: req.body.creater,
-                content: req.body.content,
-                categories: req.body.categories,
-                tags: req.body.tags,
-                image: blogimg,
-                imageAlt: blogimgalt
+        else if (req.files && title || creater || content || categories || tags) {
+            const { path, originalname } = req.files[0]
+            await BlogData.findByIdAndUpdate(id, {
+                title: title,
+                creater: creater,
+                content: content,
+                categories: categories,
+                tags: tags,
+                image: path,
+                imageAlt: originalname
             })
             res.send({ status: "success", message: "Data updated with Image successfully" })
         }
-        if (req.body.comments) {
-            const Data = await BlogData.findByIdAndUpdate(id,
-                {
-                    $push: {
-                        comments: req.body.comments
-                    }
-                }
-            )
-            res.send({ status: "success", message: "comment Added successfully" })
+        else {
+            const { path, originalname } = req.files[0]
+            await BlogData.findByIdAndUpdate(id, {
+                image: path,
+                imageAlt: originalname
+            })
+            res.send({ status: "success", message: "Image are updated successfully" })
         }
+        // if (comments) {
+        //     await BlogData.findByIdAndUpdate(id,
+        //         {
+        //             $push: {
+        //                 comments: comments
+        //             }
+        //         }
+        //     )
+        //     res.send({ status: "success", message: "comment Added successfully" })
+        // }
     }
 
     catch (e) {

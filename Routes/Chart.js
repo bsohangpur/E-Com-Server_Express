@@ -68,6 +68,29 @@ express.put('/data/remove/:id', async (req, res) => {
     }
 })
 
+//Cart product remove all function
+express.put('/data/removeall/:id', async (req, res) => {
+    //user id
+    const _id = req.params.id;
+    // //cart product id
+    // const id = req.body.id;
+
+    try {
+        const User = await RegisterData.findById({ _id: Id })
+        if (User) {
+            await RegisterData.findByIdAndUpdate(_id, { cartProduct: "" }
+            )
+
+            res.send({ "status": "success", "message": "cart product are removed to user profile" })
+        } else {
+            res.send({ "status": "failed", "message": "User Not Found" })
+        }
+
+    } catch (error) {
+        res.send({ "status": "failed", "message": "Failed to load cart product", error })
+    }
+})
+
 //Get Cart product from DB.
 express.get('/data/:id', async (req, res) => {
     //user id
@@ -93,13 +116,13 @@ express.get('/data/:id', async (req, res) => {
 //cart product quintaty update Edit function.
 express.put('/data/edit/:id', async (req, res) => {
     const Id = req.params.id;
-    
+
     try {
         const User = await RegisterData.findById({ _id: Id })
         if (User) {
-            const {cartProduct, id} = req.body
+            const { cartProduct, id } = req.body
             const index = User.cartProduct.findIndex(object => {
-                return object._id==id
+                return object._id == id
             });
             await RegisterData.updateOne(
                 { _id: Id }, { $set: { ["cartProduct." + index]: cartProduct } }
