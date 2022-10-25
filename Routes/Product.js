@@ -7,34 +7,33 @@ const Uploads = require('../app')
 
 //add Product data
 express.post('/data', Uploads.array('image'), async (req, res) => {
-
+    const { title, creater, description, priceCost, priceSell, stock, review, categories, color, size } = req.body;
     const Productimg = req.files.map((file) => { return file.path });
     const Productimgalt = req.files.map((file) => { return file.originalname });
 
-
-    const Data = new ProductData(
-        {
-            title: req.body.title,
-            creater: req.body.creater,
-            description: req.body.description,
-            priceCost: req.body.priceCost,
-            priceSell: req.body.priceSell,
-            stock: req.body.stock,
-            review: req.body.review,
-            image: Productimg,
-            imageAlt: Productimgalt,
-            category: req.body.category,
-            color: req.body.color,
-            size: req.body.size,
-        }
-    );
-    const Send = await Data.save();
-
     try {
-        res.send(Send)
+        const Data = new ProductData(
+            {
+                title,
+                creater,
+                description,
+                priceCost,
+                priceSell,
+                stock,
+                review,
+                categories,
+                color,
+                size,
+                image: Productimg,
+                imageAlt: Productimgalt
+            }
+        );
+        await Data.save();
+
+        res.send({ status: "success", message: "Data added successfully" })
     }
     catch (e) {
-        res.send(e)
+        res.send({ status: "failed", message: "something went wrong..." })
     }
 })
 
@@ -56,9 +55,9 @@ express.get('/data', async (req, res) => {
 express.put('/data/:id', Uploads.array('image'), async (req, res) => {
     const id = req.params.id;
     // destructure product data
-    const { title, creater, description, priceCost, priceSell, stock, review, category, color, size } = req.body;
+    const { title, creater, description, priceCost, priceSell, stock, review, categories, color, size } = req.body;
     try {
-        if (title || creater || description || priceCost || priceSell || stock || category || color || size) {
+        if (title || creater || description || priceCost || priceSell || stock || categories || color || size) {
 
             await ProductData.findByIdAndUpdate(id, {
                 title,
@@ -67,13 +66,13 @@ express.put('/data/:id', Uploads.array('image'), async (req, res) => {
                 priceCost,
                 priceSell,
                 stock,
-                category,
+                categories,
                 color,
                 size
             })
             res.send({ status: "success", message: "Data updated successfully" })
         }
-        else if (req.files && title || creater || description || priceCost || priceSell || stock || category || color || size) {
+        else if (req.files && title || creater || description || priceCost || priceSell || stock || categories || color || size) {
             const productImg = req.files.map((file) => { return file.path });
             const productImgalt = req.files.map((file) => { return file.originalname });
             await ProductData.findByIdAndUpdate(id, {
@@ -84,7 +83,7 @@ express.put('/data/:id', Uploads.array('image'), async (req, res) => {
                 priceSell,
                 stock,
                 review,
-                category,
+                categories,
                 color,
                 size,
                 image: productImg,

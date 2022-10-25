@@ -90,6 +90,9 @@ app.use('/', Routes);
 const Payment = require('./Routes/Payment');
 app.use('/payment', Payment);
 
+//Search data Routes
+const Search = require('./Routes/Search');
+app.use('/search', Search);
 
 
 app.listen(port, console.log("live"))

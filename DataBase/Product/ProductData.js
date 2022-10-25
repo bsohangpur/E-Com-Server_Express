@@ -34,7 +34,7 @@ const ProductSchema = new mongodb.Schema({
     }],
     image: [{ type: String }],
     imageAlt: [{ type: String }],
-    category: [{ type: String }],
+    categories: [{ type: String }],
     color: [{ type: String }],
     size: [{ type: String }],
     createdOn: { type: Date, default: Date.now }
